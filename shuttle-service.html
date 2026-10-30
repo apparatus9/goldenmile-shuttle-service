@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shuttle Service | Golden Mile Chrysler Dodge Jeep Ram</title>
+<meta name="description" content="Complimentary shuttle service for Golden Mile Chrysler service customers. Door-to-door drop-off and pick-up within our service area, Monday to Saturday.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!--
+  ============================================================================
+  GOLDEN MILE CHRYSLER - SHUTTLE SERVICE PAGE
+  Built to match the Collision Centre landing page (same palette, type and
+  section rhythm). Everything is scoped under #gmss so it can be dropped into
+  the WordPress/EDealer site the same way the Collision Centre page was.
+
+  THINGS TO CONFIRM / EDIT BEFORE PUBLISHING  (search the file for "EDIT:")
+    1. Shuttle hours + last-departure times     -> #gmss-hours
+    2. Service area radius (currently 10 km)    -> hero, trust strip, #gmss-area
+    3. Phone number for shuttle requests        -> 647-288-5337 used throughout
+    4. Advance-notice window (currently 24 h)   -> FAQ + "How it works"
+    5. Testimonial quote                        -> .gm-quote
+  ============================================================================
+-->
+
+<style>
+/* ========================================================================
+   Palette and type: taken from the Collision Centre page so the two pages
+   read as one family.
+   ======================================================================== */
+#gmss {
+  --orange: #e8762b;
+  --orange-dark: #cf6420;
+  --orange-text: #b25518;
+  --orange-tint: #fdf3ec;
+  --orange-fill: var(--orange);
+  --ink: #2f2f2f;
+  --ink-deep: #1d1d1d;
+  --grey-panel: #808285;
+  --grey-panel-dk: #6e7073;
+  --body: #4b4b4b;
+  --muted: #6b6b6b;
+  --line: #e2e2e2;
+  --surface: #f4f4f4;
+  --white: #ffffff;
+  --mopar: #0a5ea8;
+  --wrap: 1180px;
+  --radius: 2px;
+  --shadow: 0 2px 10px rgba(0,0,0,.06);
+  --shadow-lg: 0 18px 48px rgba(0,0,0,.14);
+  --ff-display: 'Archivo', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --ff-body: 'Barlow', 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------- reset -- */
+html, body { margin: 0; padding: 0; }
+#gmss *, #gmss *::before, #gmss *::after { box-sizing: border-box; }
+#gmss {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  margin: 0;
+  background: var(--white);
+  color: var(--body);
+  font-family: var(--ff-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+#gmss img { max-width: 100%; display: block; height: auto; }
+#gmss h1, #gmss h2, #gmss h3 {
+  font-family: var(--ff-display);
+  color: var(--ink);
+  line-height: 1.15;
+  margin: 0 0 .6em;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+#gmss h2 { font-size: clamp(28px, 3.2vw, 38.4px); }
+#gmss h3 { font-size: 17.6px; }
+#gmss p { margin: 0 0 1.1em; }
+#gmss a { color: var(--orange-text); text-decoration: none; }
+#gmss a:hover { text-decoration: underline; }
+#gmss ul, #gmss ol { list-style: none; margin: 0; padding: 0; }
+#gmss :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+#gmss .gm-skip { position: absolute; left: -9999px; background: var(--orange-fill); color: #fff; padding: 11px 18px; z-index: 999; font-weight: 600; }
+#gmss .gm-skip:focus { left: 16px; top: 16px; }
+#gmss .gm-wrap { width: 100%; max-width: var(--wrap); margin-inline: auto; padding-inline: 24px; }
+
+/* shared small inline icon */
+#gmss .gm-i { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ----------------------------------------------------------- eyebrow -- */
+#gmss .gm-eyebrow {
+  font-family: var(--ff-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--orange-text);
+  margin: 0 0 13.6px;
+}
+#gmss .gm-eyebrow--light { color: var(--orange); }
+#gmss .gm-center { text-align: center; }
+
+/* ------------------------------------------------------------ button -- */
+#gmss .gm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--ff-display);
+  font-size: 15.2px; font-weight: 600; letter-spacing: .03em;
+  padding: 15px 27px;
+  border: 2px solid transparent; border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+  text-decoration: none;
+}
+#gmss .gm-btn:hover { text-decoration: none; transform: translateY(-1px); }
+#gmss .gm-btn--primary { background: var(--orange-fill); border-color: var(--orange-fill); color: #fff; }
+#gmss .gm-btn--primary:hover { background: var(--orange-dark); border-color: var(--orange-dark); }
+#gmss .gm-btn--ghost { background: transparent; border-color: rgba(255,255,255,.7); color: #fff; }
+#gmss .gm-btn--ghost:hover { background: rgba(255,255,255,.1); border-color: #fff; }
+#gmss .gm-btn--dark { background: var(--ink-deep); border-color: var(--ink-deep); color: #fff; }
+#gmss .gm-btn--dark:hover { background: #000; border-color: #000; }
+
+/* ======================================================= utility bar == */
+#gmss .gm-utility { background: var(--ink-deep); color: #c9c9c9; font-size: 13px; }
+#gmss .gm-utility__inner { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: center; justify-content: space-between; min-height: 42px; padding-block: 6px; }
+#gmss .gm-utility p { margin: 0; }
+#gmss .gm-utility__addr { display: flex; align-items: center; gap: 8px; }
+#gmss .gm-utility__addr a { color: #c9c9c9; }
+#gmss .gm-utility__emg { display: flex; align-items: center; gap: 10px; }
+#gmss .gm-utility__label { font-family: var(--ff-display); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-size: 11.5px; color: var(--orange); }
+#gmss .gm-utility__emg a { color: #fff; font-weight: 600; }
+
+/* =========================================================== header == */
+#gmss .gm-header { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid var(--line); }
+#gmss .gm-header__inner { display: flex; align-items: center; gap: 24px; min-height: 96px; }
+#gmss .gm-brand { display: flex; align-items: center; gap: 14px; }
+#gmss .gm-brand__logo { height: 64px; width: auto; }
+#gmss .gm-brand__rule { width: 1px; height: 44px; background: var(--line); }
+#gmss .gm-brand__unit { font-family: var(--ff-display); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--ink); line-height: 1.3; }
+#gmss .gm-brand__unit small { display: block; font-size: 10.5px; letter-spacing: .14em; color: var(--orange-text); }
+#gmss .gm-nav { margin-left: auto; display: flex; align-items: center; gap: 26px; }
+#gmss .gm-nav > a { position: relative; font-family: var(--ff-display); font-size: 13.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); padding: 6px 0; }
+#gmss .gm-nav > a:not(.gm-btn)::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--orange); transform: scaleX(0); transform-origin: left; transition: transform .18s ease; }
+#gmss .gm-nav > a:not(.gm-btn):hover::after, #gmss .gm-nav > a[aria-current]::after { transform: scaleX(1); }
+#gmss .gm-nav > a:hover { text-decoration: none; }
+#gmss .gm-nav > a.gm-btn { padding: 11px 18px; font-size: 13px; }
+#gmss .gm-navtoggle { position: absolute; opacity: 0; pointer-events: none; }
+#gmss .gm-burger { display: none; }
+
+/* ============================================================= hero == */
+#gmss .gm-hero { position: relative; min-height: 560px; display: flex; align-items: center; background: var(--ink-deep); overflow: hidden; }
+#gmss .gm-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+#gmss .gm-hero__scrim { position: absolute; inset: 0; background:
+  linear-gradient(95deg, rgba(17,17,17,.94) 0%, rgba(17,17,17,.84) 38%, rgba(17,17,17,.5) 70%, rgba(17,17,17,.6) 100%),
+  linear-gradient(0deg, rgba(17,17,17,.22), rgba(17,17,17,.22)); }
+#gmss .gm-hero__inner { position: relative; padding-block: 88px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+#gmss .gm-hero__title { color: #fff; font-size: clamp(36.8px, 5.6vw, 64px); line-height: 1.04; letter-spacing: -.02em; max-width: 21ch; margin-bottom: .5em; }
+#gmss .gm-hero__title span { color: var(--orange); }
+#gmss .gm-hero__lede { color: rgba(255,255,255,.88); font-size: 18px; font-weight: 300; max-width: 54ch; margin-bottom: 32px; }
+#gmss .gm-hero__actions { display: flex; flex-wrap: wrap; gap: 13.6px; }
+#gmss .gm-hero__cert { margin: 35px 0 0; display: flex; align-items: center; gap: 10px; font-family: var(--ff-display); font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.8); }
+#gmss .gm-dot { width: 8px; height: 8px; background: var(--orange); flex: none; }
+#gmss .gm-hero__art { position: relative; }
+#gmss .gm-hero__art svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 24px 40px rgba(0,0,0,.45)); }
+
+/* ============================================================ trust == */
+#gmss .gm-trust { background: var(--surface); border-bottom: 1px solid var(--line); }
+#gmss .gm-trust__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; padding-block: 48px; }
+#gmss .gm-trust__item h3 { font-size: 15.2px; letter-spacing: .02em; margin: 0 0 5.6px; }
+#gmss .gm-trust__item p { margin: 0; font-size: 14.7px; color: var(--muted); }
+#gmss .gm-trust__i { width: 34px; height: 34px; display: block; margin-bottom: 14px; fill: none; stroke: var(--orange); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ========================================================= sections == */
+#gmss .gm-section { padding-block: clamp(64px, 8vw, 104px); }
+#gmss .gm-section--alt { background: var(--surface); }
+#gmss .gm-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: clamp(40px, 6vw, 80px); align-items: center; }
+#gmss .gm-split--rev .gm-split__media { order: 2; }
+#gmss .gm-split__media { position: relative; }
+#gmss .gm-split__media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center; box-shadow: var(--shadow-lg); }
+#gmss .gm-tag { position: absolute; left: 0; bottom: 35px; background: var(--orange-fill); color: #fff; font-family: var(--ff-display); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; padding: 13.6px 32px 13.6px 25.6px; z-index: 2; }
+#gmss .gm-split__body h2 { margin-bottom: .7em; }
+#gmss .gm-lead { font-size: 17px; }
+#gmss .gm-lead strong { color: var(--ink); font-weight: 600; }
+
+/* CONVENIENCE / RELIABILITY / CARE */
+#gmss .gm-pillars { margin: 35px 0 0; }
+#gmss .gm-pillars li { position: relative; padding-left: 25.6px; margin-bottom: 22px; }
+#gmss .gm-pillars li::before { content: ""; position: absolute; left: 0; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--orange); }
+#gmss .gm-pillars h3 { font-size: 15.2px; letter-spacing: .13em; text-transform: uppercase; color: var(--orange-text); margin: 0 0 3px; }
+#gmss .gm-pillars p { margin: 0; }
+
+/* ======================================================= how it works == */
+#gmss .gm-services { background: var(--grey-panel-dk); color: #fff; padding-block: clamp(64px, 8vw, 104px); }
+#gmss .gm-services .gm-eyebrow { color: #fff; }
+#gmss .gm-services__title { color: #fff; text-align: center; font-size: clamp(25.6px, 3vw, 33.6px); letter-spacing: .14em; text-transform: uppercase; font-weight: 600; margin-bottom: 51px; }
+#gmss .gm-services__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+#gmss .gm-svc { position: relative; background: rgba(0,0,0,.12); border: 1px solid rgba(255,255,255,.22); padding: 38px 28px; transition: background-color .2s ease, transform .2s ease; }
+#gmss .gm-svc:hover { background: rgba(0,0,0,.2); transform: translateY(-3px); }
+#gmss .gm-svc__step { position: absolute; top: 18px; right: 20px; font-family: var(--ff-display); font-size: 40px; font-weight: 700; line-height: 1; color: rgba(255,255,255,.18); }
+#gmss .gm-svc__i { width: 58px; height: 58px; display: block; margin-bottom: 22px; fill: none; stroke: #fff; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
+#gmss .gm-svc h3 { color: #fff; font-size: 17.3px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 9.6px; }
+#gmss .gm-svc p { color: #f1f1f1; margin: 0; font-size: 15.5px; }
+#gmss .gm-services__foot { text-align: center; margin: 48px 0 0; color: #fff; }
+#gmss .gm-services__foot a { color: #fff; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ====================================================== service area == */
+#gmss .gm-area__grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 72px); align-items: start; }
+#gmss .gm-map { position: relative; background: var(--ink-deep); box-shadow: var(--shadow-lg); aspect-ratio: 4 / 3; overflow: hidden; }
+#gmss .gm-map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(.85); }
+#gmss .gm-map__ring { position: absolute; left: 50%; top: 50%; width: 62%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; border: 3px solid var(--orange); box-shadow: 0 0 0 9999px rgba(29,29,29,.28), inset 0 0 0 1px rgba(255,255,255,.35); pointer-events: none; }
+#gmss .gm-map__pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%); width: 30px; height: 30px; fill: var(--orange); stroke: #fff; stroke-width: 1.5; pointer-events: none; filter: drop-shadow(0 4px 6px rgba(0,0,0,.4)); }
+#gmss .gm-map__cap { position: absolute; left: 0; right: 0; bottom: 0; background: var(--orange-fill); color: #fff; font-family: var(--ff-display); font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 12px 20px; display: flex; justify-content: space-between; gap: 16px; }
+#gmss .gm-map__cap span { opacity: .85; }
+#gmss .gm-hoods { margin: 28px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+#gmss .gm-hoods li { position: relative; padding-left: 26px; font-family: var(--ff-display); font-size: 14.9px; font-weight: 500; color: var(--ink); line-height: 1.45; }
+#gmss .gm-hoods li::before { content: ""; position: absolute; left: 0; top: .32em; width: 11px; height: 6px; border-left: 2px solid var(--orange); border-bottom: 2px solid var(--orange); transform: rotate(-45deg); }
+#gmss .gm-note { margin: 28px 0 0; background: var(--orange-tint); border-left: 3px solid var(--orange); padding: 16px 20px; font-size: 15.5px; }
+#gmss .gm-note p { margin: 0; }
+#gmss .gm-note strong { color: var(--ink); }
+
+/* ============================================================ hours == */
+#gmss .gm-care { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+#gmss .gm-care__media { position: relative; min-height: 420px; }
+#gmss .gm-care__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 22%; }
+#gmss .gm-care__panel { background: var(--orange-fill); color: #fff; display: flex; align-items: center; padding: clamp(48px, 6vw, 80px) clamp(24px, 4vw, 64px); }
+#gmss .gm-care__inner { max-width: 58ch; width: 100%; }
+#gmss .gm-care__panel .gm-eyebrow { color: rgba(255,255,255,.85); }
+#gmss .gm-care__panel h2 { color: #fff; margin-bottom: .7em; }
+#gmss .gm-care__panel p { color: rgba(255,255,255,.95); }
+#gmss .gm-hours { width: 100%; border-collapse: collapse; margin: 8px 0 20px; font-family: var(--ff-display); }
+#gmss .gm-hours th, #gmss .gm-hours td { text-align: left; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.3); font-size: 15px; color: #fff; }
+#gmss .gm-hours th { font-weight: 600; width: 38%; }
+#gmss .gm-hours td { font-weight: 500; }
+#gmss .gm-hours td:last-child { text-align: right; font-weight: 400; opacity: .9; font-size: 13.5px; letter-spacing: .04em; }
+#gmss .gm-hours tr.is-closed td { opacity: .7; }
+#gmss .gm-hours thead th { font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; opacity: .85; border-bottom: 2px solid rgba(255,255,255,.5); padding-bottom: 6px; }
+#gmss .gm-hours thead th:last-child { text-align: right; }
+#gmss .gm-care__sig { margin: 25px 0 0; font-family: var(--ff-display); font-size: 13.4px; font-weight: 600; letter-spacing: .3em; text-transform: lowercase; color: #fff; }
+#gmss .gm-care__fine { font-size: 14px; opacity: .92; }
+
+/* ====================================================== testimonial == */
+#gmss .gm-quote { background: #fff; padding-block: clamp(56px, 7vw, 88px); }
+#gmss .gm-quote__inner { display: flex; align-items: center; gap: 32px; max-width: 900px; }
+#gmss .gm-quote__avatar { width: 92px; height: 92px; border-radius: 50%; flex: none; background: var(--surface); display: grid; place-items: center; color: var(--orange); font-family: var(--ff-display); font-size: 40px; font-weight: 700; line-height: 1; }
+#gmss .gm-quote blockquote { margin: 0; }
+#gmss .gm-quote blockquote p { margin: 0; font-size: clamp(17.6px, 2.1vw, 22.7px); font-weight: 300; font-style: italic; line-height: 1.5; color: var(--ink); border-left: 3px solid var(--orange); padding-left: 25.6px; }
+#gmss .gm-quote cite { display: block; margin: 12px 0 0 28px; font-style: normal; font-family: var(--ff-display); font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+/* ========================================================== values == */
+#gmss .gm-values { margin: 32px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px 25.6px; }
+#gmss .gm-values li { position: relative; padding-left: 30px; font-family: var(--ff-display); font-size: 14.9px; font-weight: 500; color: var(--ink); line-height: 1.45; }
+#gmss .gm-values li::before { content: ""; position: absolute; left: 0; top: .32em; width: 11px; height: 6px; border-left: 2px solid var(--orange); border-bottom: 2px solid var(--orange); transform: rotate(-45deg); }
+
+/* alternative options cards */
+#gmss .gm-alt { margin: 36px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+#gmss .gm-alt__card { background: #fff; border: 1px solid var(--line); padding: 26px 24px; box-shadow: var(--shadow); }
+#gmss .gm-alt__card svg { width: 32px; height: 32px; fill: none; stroke: var(--orange); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 14px; }
+#gmss .gm-alt__card h3 { font-size: 15.2px; letter-spacing: .04em; margin-bottom: 6px; }
+#gmss .gm-alt__card p { margin: 0; font-size: 15px; color: var(--muted); }
+
+/* ============================================================= faq == */
+#gmss .gm-faq { max-width: 860px; margin: 40px auto 0; border-top: 1px solid var(--line); }
+#gmss .gm-faq details { border-bottom: 1px solid var(--line); }
+#gmss .gm-faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 4px; font-family: var(--ff-display); font-size: 16.5px; font-weight: 600; color: var(--ink); }
+#gmss .gm-faq summary::-webkit-details-marker { display: none; }
+#gmss .gm-faq summary::after { content: ""; flex: none; width: 10px; height: 10px; border-right: 2px solid var(--orange); border-bottom: 2px solid var(--orange); transform: rotate(45deg); transition: transform .2s ease; margin-right: 6px; }
+#gmss .gm-faq details[open] summary::after { transform: rotate(-135deg); }
+#gmss .gm-faq summary:hover { color: var(--orange-text); }
+#gmss .gm-faq__a { padding: 0 4px 22px; max-width: 72ch; }
+#gmss .gm-faq__a p { margin: 0 0 .8em; }
+#gmss .gm-faq__a p:last-child { margin: 0; }
+
+/* ========================================================= contact == */
+#gmss .gm-contact { background: var(--ink-deep); color: #d4d4d4; padding-block: clamp(64px, 8vw, 104px); }
+#gmss .gm-contact__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 80px); align-items: start; }
+#gmss .gm-contact__blurb { color: #c6c6c6; max-width: 42ch; margin: 0 0 28px; }
+#gmss .gm-contact h2 { color: #fff; }
+#gmss .gm-contact__intro { font-family: var(--ff-display); font-weight: 600; color: #fff; font-size: 16.8px; margin-bottom: 32px; }
+#gmss .gm-contact__list { margin: 0; }
+#gmss .gm-contact__list > div { padding: 19px 0; border-top: 1px solid rgba(255,255,255,.12); }
+#gmss .gm-contact__list > div:first-child { border-top: 0; padding-top: 0; }
+#gmss .gm-contact__list dt { display: flex; align-items: center; gap: 9px; font-family: var(--ff-display); font-size: 11.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--orange); margin-bottom: 5.6px; }
+#gmss .gm-contact__list dd { margin: 0; font-size: 16.3px; color: #e9e9e9; }
+#gmss .gm-contact__list dd a { color: #e9e9e9; }
+#gmss .gm-contact__list dd a:hover { color: var(--orange); }
+#gmss .gm-contact__list dd small { display: block; font-size: 13.5px; color: #a9a9a9; margin-top: 2px; }
+#gmss .gm-emergency { margin-top: 35px; background: var(--orange-fill); padding: 22px 25.6px; }
+#gmss .gm-emergency__label { margin: 0 0 2px; font-family: var(--ff-display); font-size: 11.8px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.9); }
+#gmss .gm-emergency__tel { font-family: var(--ff-display); font-size: 25.6px; font-weight: 700; color: #fff; letter-spacing: .01em; }
+#gmss .gm-emergency__tel:hover { text-decoration: none; opacity: .9; }
+#gmss .gm-emergency p:last-child { margin: 6px 0 0; font-size: 13.5px; color: rgba(255,255,255,.9); }
+
+/* =========================================================== footer == */
+#gmss .gm-footer { background: #111; color: #9d9d9d; font-size: 14.7px; }
+#gmss .gm-footer__inner { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 40px; padding-block: 51px; align-items: start; }
+#gmss .gm-footer__logo { display: inline-block; background: #fff; padding: 14px 19px; border-radius: var(--radius); }
+#gmss .gm-footer__logo img { width: 100%; max-width: 240px; height: auto; }
+#gmss .gm-footer__tagline { margin: 17.6px 0 0; color: #d8d8d8; font-family: var(--ff-display); font-size: 14.4px; font-weight: 500; }
+#gmss .gm-footer h3 { color: #fff; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 14px; }
+#gmss .gm-footer__links li { margin-bottom: 8px; }
+#gmss .gm-footer__links a, #gmss .gm-footer__contact a { color: #c9c9c9; }
+#gmss .gm-footer__links a:hover, #gmss .gm-footer__contact a:hover { color: var(--orange); }
+#gmss .gm-footer__contact p { margin: 0 0 7px; }
+#gmss .gm-footer__bar { display: flex; flex-wrap: wrap; gap: 6px 24px; justify-content: space-between; border-top: 1px solid rgba(255,255,255,.1); padding-block: 21px; font-size: 13px; color: #8f8f8f; }
+#gmss .gm-footer__bar p { margin: 0; }
+
+/* ======================================================= responsive == */
+@media (max-width: 1040px) {
+  #gmss .gm-nav { gap: 17px; }
+  #gmss .gm-nav > a { font-size: 12.5px; }
+  #gmss .gm-services__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  #gmss .gm-hero__inner { grid-template-columns: 1fr; }
+  #gmss .gm-hero__art { max-width: 420px; }
+  #gmss .gm-trust__grid { grid-template-columns: repeat(2, 1fr); gap: 32px 24px; }
+  #gmss .gm-split, #gmss .gm-contact__grid, #gmss .gm-area__grid { grid-template-columns: 1fr; }
+  #gmss .gm-split--rev .gm-split__media { order: 0; }
+  #gmss .gm-split__media img { aspect-ratio: 16 / 9; }
+  #gmss .gm-care { grid-template-columns: 1fr; }
+  #gmss .gm-care__media { min-height: 300px; }
+  #gmss .gm-alt { grid-template-columns: 1fr; }
+  #gmss .gm-footer__inner { grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 760px) {
+  #gmss { font-size: 16px; }
+  #gmss .gm-utility__inner { justify-content: center; text-align: center; }
+  #gmss .gm-utility__addr { display: none; }
+  #gmss .gm-header__inner { min-height: 74px; flex-wrap: wrap; gap: 8px; }
+  #gmss .gm-brand__rule, #gmss .gm-brand__unit { display: none; }
+  #gmss .gm-brand__logo { height: 52px; }
+  #gmss .gm-burger { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 44px; height: 44px; padding: 0 10px; cursor: pointer; order: 3; margin-left: auto; }
+  #gmss .gm-burger span { display: block; height: 2px; background: var(--ink); transition: transform .2s ease, opacity .2s ease; }
+  #gmss .gm-navtoggle:checked + .gm-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  #gmss .gm-navtoggle:checked + .gm-burger span:nth-child(2) { opacity: 0; }
+  #gmss .gm-navtoggle:checked + .gm-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  #gmss .gm-nav { order: 4; display: none; width: 100%; flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 12px; border-top: 1px solid var(--line); margin-left: 0; }
+  #gmss .gm-navtoggle:checked ~ .gm-nav { display: flex; }
+  #gmss .gm-nav > a { padding: 14px 3px; border-bottom: 1px solid var(--line); font-size: 15.2px; }
+  #gmss .gm-nav > a:not(.gm-btn)::after { display: none; }
+  #gmss .gm-nav > a.gm-btn { margin-top: 12px; }
+  #gmss .gm-hero { min-height: 0; }
+  #gmss .gm-hero__inner { padding-block: 56px; }
+  #gmss .gm-hero__actions .gm-btn { flex: 1 1 auto; }
+  #gmss .gm-trust__grid { grid-template-columns: 1fr; gap: 25px; padding-block: 40px; }
+  #gmss .gm-services__grid { grid-template-columns: 1fr; gap: 20px; }
+  #gmss .gm-quote__inner { flex-direction: column; align-items: flex-start; gap: 19px; }
+  #gmss .gm-quote blockquote p { padding-left: 17.6px; }
+  #gmss .gm-values, #gmss .gm-hoods { grid-template-columns: 1fr; }
+  #gmss .gm-tag { bottom: 19px; font-size: 11.8px; padding: 11px 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #gmss { scroll-behavior: auto; }
+  #gmss *, #gmss *::before, #gmss *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+@media print {
+  #gmss .gm-utility, #gmss .gm-header, #gmss .gm-hero__actions, #gmss .gm-burger, #gmss .gm-map { display: none !important; }
+  #gmss { font-size: 11pt; color: #000; }
+}
+</style>
+</head>
+<body>
+<div id="gmss">
+<a class="gm-skip" href="#gmss-main">Skip to content</a>
+
+<!-- ================= UTILITY BAR ================= -->
+<div class="gm-utility">
+  <div class="gm-wrap gm-utility__inner">
+    <p class="gm-utility__addr">
+      <svg class="gm-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      <a href="https://maps.google.com/?q=1743+Eglinton+Ave+E,+Toronto+ON+M4A+1J8" target="_blank" rel="noopener">1743 Eglinton Ave E, Toronto ON M4A 1J8</a>
+    </p>
+    <p class="gm-utility__emg">
+      <span class="gm-utility__label">Service &amp; Shuttle</span>
+      <a href="tel:+16472885337">647-288-5337</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header class="gm-header">
+  <div class="gm-wrap gm-header__inner">
+    <a class="gm-brand" href="https://www.goldenmilechrysler.ca" aria-label="Golden Mile Chrysler home">
+      <img class="gm-brand__logo" src="https://ddztmb1ahc6o7.cloudfront.net/goldenmilechrysler/wp-content/uploads/2026/07/29115313/GoldenMileChryslerDodgeJeepRam-AnimatedDealerLogo-D3.gif" alt="Golden Mile Chrysler Dodge Jeep Ram" width="220" height="64">
+      <span class="gm-brand__rule" aria-hidden="true"></span>
+      <span class="gm-brand__unit">Service Department<small>Complimentary Shuttle</small></span>
+    </a>
+    <input class="gm-navtoggle" type="checkbox" id="gmss-navtoggle" aria-label="Toggle navigation">
+    <label class="gm-burger" for="gmss-navtoggle" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="gm-nav" aria-label="Primary">
+      <a href="https://www.goldenmilechrysler.ca/inventory/new/">New</a>
+      <a href="https://www.goldenmilechrysler.ca/inventory/used/">Pre-Owned</a>
+      <a href="https://www.goldenmilechrysler.ca/apply-for-financing/">Finance</a>
+      <a href="https://www.goldenmilechrysler.ca/collision-centre/">Collision Centre</a>
+      <a href="#" aria-current="page">Shuttle Service</a>
+      <a class="gm-btn gm-btn--primary" href="https://autoconnect.online/golden-mile-scheduler/" target="_blank" rel="noopener">Book Service</a>
+    </nav>
+  </div>
+</header>
+
+<main id="gmss-main">
+
+<!-- ================= HERO ================= -->
+<section class="gm-hero">
+  <div class="gm-hero__scrim"></div>
+  <div class="gm-wrap gm-hero__inner">
+    <div>
+      <p class="gm-eyebrow gm-eyebrow--light">Golden Mile Chrysler Service Department</p>
+      <h1 class="gm-hero__title">Complimentary shuttle,<br><span>every service visit</span></h1>
+      <p class="gm-hero__lede">Drop your vehicle off for service and let us take care of the rest. Our courtesy shuttle will get you to work, home, or wherever you need to be, and bring you back when your vehicle is ready. No cost, no hassle.</p>
+      <div class="gm-hero__actions">
+        <a class="gm-btn gm-btn--primary" href="https://autoconnect.online/golden-mile-scheduler/" target="_blank" rel="noopener">Book a Service Appointment</a>
+        <a class="gm-btn gm-btn--ghost" href="tel:+16472885337">Call 647-288-5337</a>
+      </div>
+      <!-- EDIT: service radius -->
+      <p class="gm-hero__cert"><span class="gm-dot"></span> Monday to Saturday &nbsp;&middot;&nbsp; Within 10 km of the dealership</p>
+    </div>
+    <div class="gm-hero__art" aria-hidden="true">
+      <!-- Shuttle van illustration. Swap for a photo of the actual shuttle by
+           replacing this SVG with <img class="gm-hero__img" src="..."> -->
+      <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="road" x1="0" x2="1"><stop offset="0" stop-color="#2a2a2a"/><stop offset="1" stop-color="#1a1a1a"/></linearGradient>
+          <linearGradient id="bodyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f08a45"/><stop offset="1" stop-color="#cf6420"/></linearGradient>
+        </defs>
+        <ellipse cx="260" cy="262" rx="230" ry="18" fill="url(#road)" opacity=".9"/>
+        <rect x="60" y="258" width="400" height="4" fill="#e8762b" opacity=".35"/>
+        <!-- body -->
+        <path d="M70 215 V140 c0-10 6-22 16-26 l54-42 c6-5 14-8 24-8 h260 c22 0 36 14 36 34 v117 c0 10-8 18-18 18 H88 c-10 0-18-8-18-18z" fill="url(#bodyg)"/>
+        <!-- windows -->
+        <path d="M92 142 l50-40 c4-3 9-5 15-5 h20 v70 H92z" fill="#1d1d1d"/>
+        <rect x="190" y="97" width="78" height="70" fill="#1d1d1d"/>
+        <rect x="282" y="97" width="78" height="70" fill="#1d1d1d"/>
+        <rect x="374" y="97" width="70" height="70" rx="2" fill="#1d1d1d"/>
+        <path d="M100 142 l46-36 c3-2 6-4 10-4 h12 v62 h-68z" fill="#3a3a3a" opacity=".55"/>
+        <rect x="196" y="103" width="66" height="58" fill="#3a3a3a" opacity=".5"/>
+        <rect x="288" y="103" width="66" height="58" fill="#3a3a3a" opacity=".5"/>
+        <rect x="380" y="103" width="58" height="58" fill="#3a3a3a" opacity=".5"/>
+        <!-- side stripe -->
+        <rect x="70" y="182" width="390" height="10" fill="#1d1d1d" opacity=".35"/>
+        <!-- door lines -->
+        <path d="M178 97 V228 M270 97 V228 M366 97 V228" stroke="#1d1d1d" stroke-width="2" opacity=".5"/>
+        <!-- headlight / taillight -->
+        <rect x="70" y="196" width="22" height="16" rx="3" fill="#fff6d6"/>
+        <rect x="446" y="196" width="14" height="16" rx="3" fill="#ff5a3c"/>
+        <!-- wheels -->
+        <circle cx="150" cy="232" r="32" fill="#111"/><circle cx="150" cy="232" r="18" fill="#3b3b3b"/><circle cx="150" cy="232" r="7" fill="#9a9a9a"/>
+        <circle cx="390" cy="232" r="32" fill="#111"/><circle cx="390" cy="232" r="18" fill="#3b3b3b"/><circle cx="390" cy="232" r="7" fill="#9a9a9a"/>
+        <!-- roof sign -->
+        <rect x="200" y="42" width="180" height="22" rx="2" fill="#fff"/>
+        <text x="290" y="58" text-anchor="middle" font-family="Archivo, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#1d1d1d">COURTESY SHUTTLE</text>
+        <!-- logo lockup on body -->
+        <text x="320" y="214" text-anchor="middle" font-family="Archivo, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.5" fill="#fff">GOLDEN MILE CHRYSLER</text>
+        <!-- motion lines -->
+        <path d="M14 180 h36 M4 200 h30 M18 220 h24" stroke="#e8762b" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUST STRIP ================= -->
+<section class="gm-trust" aria-label="Shuttle service at a glance">
+  <div class="gm-wrap gm-trust__grid">
+    <div class="gm-trust__item">
+      <svg class="gm-trust__i" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M24 14v4M24 30v4M18 24h-4M34 24h-4"/><path d="M27 21.5c-.5-1.5-1.7-2.5-3.3-2.5-2 0-3.2 1.2-3.2 2.5 0 3.5 7 1.5 7 5 0 1.4-1.4 2.5-3.5 2.5-1.8 0-3.1-1-3.5-2.5"/></svg>
+      <h3>100% Complimentary</h3>
+      <p>No charge, no tipping expected. It's part of the service.</p>
+    </div>
+    <div class="gm-trust__item">
+      <svg class="gm-trust__i" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 34V20l6-9h20l6 9v14z"/><path d="M8 24h32"/><circle cx="16" cy="34" r="4"/><circle cx="32" cy="34" r="4"/><path d="M14 11v6M34 11v6"/></svg>
+      <h3>Door-to-Door</h3>
+      <p>Home, office, transit or the mall. You choose the stop.</p>
+    </div>
+    <div class="gm-trust__item">
+      <svg class="gm-trust__i" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="10" width="32" height="30" rx="2"/><path d="M8 19h32M16 6v8M32 6v8"/><path d="M17 29l4 4 8-9"/></svg>
+      <h3>Monday to Saturday</h3>
+      <p>Runs during service hours, with regular departures.</p>
+    </div>
+    <div class="gm-trust__item">
+      <svg class="gm-trust__i" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l15 6v11c0 10-6.4 17.4-15 21-8.6-3.6-15-11-15-21V11z"/><path d="M17 24l5 5 10-11"/></svg>
+      <h3>Safe &amp; Insured</h3>
+      <p>Licensed, courteous drivers in a clean, well-maintained vehicle.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="gm-section" id="gmss-about">
+  <div class="gm-wrap gm-split">
+    <div class="gm-split__media">
+      <img src="https://cdn.jsdelivr.net/gh/apparatus9/goldenmile-collision-centre@main/assets/high-five.jpg" alt="A Golden Mile Chrysler advisor greeting a customer" width="960" height="1200" loading="lazy">
+      <span class="gm-tag">Your Day, Uninterrupted</span>
+    </div>
+    <div class="gm-split__body">
+      <p class="gm-eyebrow">About the Shuttle</p>
+      <h2>Getting you where you need to be</h2>
+      <p class="gm-lead">Bringing your vehicle in for maintenance shouldn't mean rearranging your whole day. <strong>Our complimentary shuttle service</strong> is available to every service and collision customer at Golden Mile Chrysler, whether you're in for a quick oil change or a multi-day repair.</p>
+      <p>Simply let your service advisor know you'd like a ride when you book or when you arrive. We'll drop you off anywhere within our service area, and when your vehicle is ready we'll come back and pick you up. It's one more way we make sure you leave happy.</p>
+      <ul class="gm-pillars">
+        <li>
+          <h3>Convenience</h3>
+          <p>Get to work, home, school or the Eglinton Square shops while we take care of your vehicle.</p>
+        </li>
+        <li>
+          <h3>Reliability</h3>
+          <p>Scheduled departures and a dedicated driver mean you're never left waiting around.</p>
+        </li>
+        <li>
+          <h3>Care</h3>
+          <p>Friendly, professional drivers who treat you like family, because at Golden Mile you are.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="gm-services" id="gmss-how">
+  <div class="gm-wrap">
+    <p class="gm-eyebrow gm-center">How It Works</p>
+    <h2 class="gm-services__title">Four simple steps</h2>
+    <div class="gm-services__grid">
+      <article class="gm-svc">
+        <span class="gm-svc__step" aria-hidden="true">01</span>
+        <svg class="gm-svc__i" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="10" width="32" height="30" rx="2"/><path d="M8 19h32M16 6v8M32 6v8"/><path d="M17 29l4 4 8-9"/></svg>
+        <h3>Book &amp; Request</h3>
+        <p>Schedule your service online or by phone and let us know you'd like the shuttle. Mention your drop-off address so we can plan the route.</p>
+      </article>
+      <article class="gm-svc">
+        <span class="gm-svc__step" aria-hidden="true">02</span>
+        <svg class="gm-svc__i" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 28l4-12h20l4 12"/><rect x="6" y="28" width="36" height="10" rx="2"/><circle cx="14" cy="38" r="3"/><circle cx="34" cy="38" r="3"/><path d="M12 22h24"/></svg>
+        <h3>Drop Off Your Vehicle</h3>
+        <p>Check in with your service advisor at 1743 Eglinton Ave E. Confirm your destination and a call-back number before you head out.</p>
+      </article>
+      <article class="gm-svc">
+        <span class="gm-svc__step" aria-hidden="true">03</span>
+        <svg class="gm-svc__i" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 34V20l6-9h20l6 9v14z"/><path d="M8 24h32"/><circle cx="16" cy="34" r="4"/><circle cx="32" cy="34" r="4"/></svg>
+        <h3>Ride With Us</h3>
+        <p>Our driver takes you to your stop. Shuttles depart regularly throughout the day, so your wait at the dealership is short.</p>
+      </article>
+      <article class="gm-svc">
+        <span class="gm-svc__step" aria-hidden="true">04</span>
+        <svg class="gm-svc__i" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 24h8l5-8 6 16 5-8h12"/><circle cx="38" cy="24" r="3"/></svg>
+        <h3>We Bring You Back</h3>
+        <p>When your vehicle is ready, your advisor calls or texts you. Tell us where you are and we'll come get you for the return trip.</p>
+      </article>
+    </div>
+    <!-- EDIT: advance-notice window -->
+    <p class="gm-services__foot">Need a ride on short notice? <a href="tel:+16472885337">Call 647-288-5337</a> and we'll do our best to fit you in. Booking 24 hours ahead guarantees your spot.</p>
+  </div>
+</section>
+
+<!-- ================= SERVICE AREA ================= -->
+<section class="gm-section" id="gmss-area">
+  <div class="gm-wrap gm-area__grid">
+    <div class="gm-map">
+      <iframe title="Golden Mile Chrysler shuttle service area map" src="https://www.google.com/maps?q=1743+Eglinton+Ave+E,+Toronto+ON+M4A+1J8&z=12&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div class="gm-map__ring" aria-hidden="true"></div>
+      <svg class="gm-map__pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.6" fill="#fff" stroke="none"/></svg>
+      <!-- EDIT: service radius -->
+      <p class="gm-map__cap">Shuttle Service Area <span>Approx. 10 km radius</span></p>
+    </div>
+    <div>
+      <p class="gm-eyebrow">Where We Go</p>
+      <h2>Our shuttle service area</h2>
+      <p class="gm-lead">To keep departures frequent and wait times short, the shuttle operates within roughly <strong>10 kilometres of the dealership</strong>. That covers most of Scarborough, East York and the east side of North York, including these neighbourhoods:</p>
+      <ul class="gm-hoods">
+        <li>Golden Mile &amp; Eglinton East</li>
+        <li>Wexford / Maryvale</li>
+        <li>Clairlea-Birchmount</li>
+        <li>Victoria Village</li>
+        <li>Parkwoods / Donalda</li>
+        <li>Don Mills &amp; Flemingdon Park</li>
+        <li>East York &amp; Leaside</li>
+        <li>Scarborough Junction</li>
+        <li>Agincourt &amp; Dorset Park</li>
+        <li>Thorncliffe Park</li>
+        <li>Birch Cliff &amp; Cliffside</li>
+        <li>Kennedy / Warden transit stations</li>
+      </ul>
+      <div class="gm-note">
+        <p><strong>Outside the area?</strong> Give us a call. Depending on the day's schedule we can often accommodate longer trips, or help you arrange a courtesy vehicle for extended repairs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHUTTLE HOURS ================= -->
+<section class="gm-care" id="gmss-hours">
+  <div class="gm-care__media">
+    <img src="https://cdn.jsdelivr.net/gh/apparatus9/goldenmile-collision-centre@main/assets/car-detail.jpg" alt="Vehicle in the Golden Mile Chrysler service bay" width="1200" height="900" loading="lazy">
+  </div>
+  <div class="gm-care__panel">
+    <div class="gm-care__inner">
+      <p class="gm-eyebrow">Shuttle Hours</p>
+      <h2>When the shuttle runs</h2>
+      <p>Our shuttle operates throughout the service day. The last outbound departure leaves 30 minutes before the service department closes, so plan your pick-up accordingly.</p>
+      <!-- EDIT: confirm hours with the service department -->
+      <table class="gm-hours">
+        <thead><tr><th scope="col">Day</th><th scope="col">Shuttle</th><th scope="col">Last departure</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Monday</th><td>7:30 AM &ndash; 5:00 PM</td><td>4:30 PM</td></tr>
+          <tr><th scope="row">Tuesday</th><td>7:30 AM &ndash; 7:00 PM</td><td>6:30 PM</td></tr>
+          <tr><th scope="row">Wednesday</th><td>7:30 AM &ndash; 5:00 PM</td><td>4:30 PM</td></tr>
+          <tr><th scope="row">Thursday</th><td>7:30 AM &ndash; 7:00 PM</td><td>6:30 PM</td></tr>
+          <tr><th scope="row">Friday</th><td>7:30 AM &ndash; 5:00 PM</td><td>4:30 PM</td></tr>
+          <tr><th scope="row">Saturday</th><td>8:00 AM &ndash; 4:00 PM</td><td>3:30 PM</td></tr>
+          <tr class="is-closed"><th scope="row">Sunday</th><td>Closed</td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+      <p class="gm-care__fine">Hours may vary on statutory holidays. Shuttle availability is first-come, first-served on busy days, so booking ahead is always recommended.</p>
+      <p class="gm-care__sig">because we care.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIAL ================= -->
+<section class="gm-quote">
+  <div class="gm-wrap gm-quote__inner">
+    <div class="gm-quote__avatar" aria-hidden="true">&ldquo;</div>
+    <blockquote>
+      <!-- EDIT: replace with a real customer review -->
+      <p>Dropped my Grand Cherokee off at 7:45, the shuttle had me at my office downtown by 8:20, and they picked me up the same afternoon. Easiest service visit I've ever had.</p>
+      <cite>Verified service customer</cite>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ================= WHILE YOU WAIT / ALTERNATIVES ================= -->
+<section class="gm-section gm-section--alt" id="gmss-options">
+  <div class="gm-wrap">
+    <div class="gm-split">
+      <div class="gm-split__body">
+        <p class="gm-eyebrow">More Ways We Make It Easy</p>
+        <h2>Prefer to stay? We've got you covered</h2>
+        <p class="gm-lead">The shuttle is just one option. Whether you'd rather wait on-site, work remotely, or need a vehicle for a longer repair, we'll find the arrangement that fits your day.</p>
+        <ul class="gm-values">
+          <li>Comfortable customer lounge</li>
+          <li>Complimentary Wi-Fi &amp; charging</li>
+          <li>Fresh coffee, tea and water</li>
+          <li>Live TV and reading area</li>
+          <li>Steps from Eglinton Square shops</li>
+          <li>Text updates on your vehicle's status</li>
+        </ul>
+      </div>
+      <div>
+        <div class="gm-alt">
+          <div class="gm-alt__card">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 28l4-12h20l4 12"/><rect x="6" y="28" width="36" height="10" rx="2"/><circle cx="14" cy="38" r="3"/><circle cx="34" cy="38" r="3"/><path d="M24 6v6M20 9h8"/></svg>
+            <h3>Courtesy Vehicles</h3>
+            <p>For qualifying warranty, recall and multi-day collision repairs, ask your advisor about a courtesy vehicle. Availability is limited, so request one when you book.</p>
+          </div>
+          <div class="gm-alt__card">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="12" width="32" height="24" rx="2"/><path d="M8 20h32M14 36v4h20v-4"/></svg>
+            <h3>Express Lane Service</h3>
+            <p>Oil changes, tire rotations and quick inspections are often done in under an hour. Many customers simply wait in the lounge.</p>
+          </div>
+          <div class="gm-alt__card">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 24a16 16 0 1 1 32 0 16 16 0 0 1-32 0z"/><path d="M24 14v10l6 4"/></svg>
+            <h3>Early Drop / Late Pick-Up</h3>
+            <p>Running tight? Use the early-bird key drop before we open, and ask about after-hours pick-up arrangements for your finished vehicle.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="gm-section" id="gmss-faq">
+  <div class="gm-wrap">
+    <p class="gm-eyebrow gm-center">Good To Know</p>
+    <h2 class="gm-center">Shuttle service FAQ</h2>
+    <div class="gm-faq">
+      <details>
+        <summary>Is the shuttle really free?</summary>
+        <div class="gm-faq__a"><p>Yes. The shuttle is complimentary for all Golden Mile Chrysler service, parts-installation and collision centre customers. There is no charge and no tipping expected.</p></div>
+      </details>
+      <details>
+        <summary>Do I need to book the shuttle in advance?</summary>
+        <!-- EDIT: advance-notice window -->
+        <div class="gm-faq__a"><p>We recommend requesting the shuttle when you book your service appointment, ideally 24 hours ahead. Walk-in requests are welcome and we'll accommodate them whenever we can, but seats go on a first-come, first-served basis.</p></div>
+      </details>
+      <details>
+        <summary>How far will the shuttle take me?</summary>
+        <div class="gm-faq__a"><p>Our standard service area is roughly a 10 km radius around the dealership, which covers most of Scarborough, East York and eastern North York. See the <a href="#gmss-area">service area map</a> above. If your destination is further out, call us and we'll see what we can do.</p></div>
+      </details>
+      <details>
+        <summary>How long will I wait for a ride?</summary>
+        <div class="gm-faq__a"><p>Shuttles depart regularly throughout the day. Because we group riders heading in the same direction, your trip may include one or two other stops. On busy mornings (7:30 to 9:00 AM) please allow a little extra time.</p></div>
+      </details>
+      <details>
+        <summary>Can I bring my children or a pet?</summary>
+        <div class="gm-faq__a"><p>Children are welcome. Please bring your own car seat or booster, as required by Ontario law, and let us know ahead of time so we can plan seating. Service animals are always welcome; for other pets, please call ahead.</p></div>
+      </details>
+      <details>
+        <summary>What if I'm not ready when the shuttle comes to pick me up?</summary>
+        <div class="gm-faq__a"><p>No problem. Your service advisor will coordinate a pick-up time that works for you. If your plans change, just call <a href="tel:+16472885337">647-288-5337</a> and we'll reschedule the return trip.</p></div>
+      </details>
+      <details>
+        <summary>Is the shuttle wheelchair accessible?</summary>
+        <div class="gm-faq__a"><p>Our shuttle can accommodate folding mobility aids. If you require a fully accessible vehicle, please let us know when booking and we will make alternate arrangements for you.</p></div>
+      </details>
+      <details>
+        <summary>Can the shuttle pick me up from home to bring my vehicle in?</summary>
+        <div class="gm-faq__a"><p>The shuttle runs from the dealership outward, so your vehicle needs to be dropped off first. For customers who can't make it in, ask your advisor about vehicle pick-up and delivery options.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="gm-contact" id="gmss-contact">
+  <div class="gm-wrap gm-contact__grid">
+    <div class="gm-contact__info">
+      <p class="gm-eyebrow gm-eyebrow--light">Need a ride?</p>
+      <h2>Request the shuttle</h2>
+      <p class="gm-contact__intro">Golden Mile Chrysler Service Department</p>
+      <p class="gm-contact__blurb">Book your service online and add a note that you'd like the shuttle, or give us a call and we'll set everything up for you.</p>
+      <a class="gm-btn gm-btn--primary" href="https://autoconnect.online/golden-mile-scheduler/" target="_blank" rel="noopener">Book a Service Appointment</a>
+    </div>
+    <div class="gm-contact__details">
+      <dl class="gm-contact__list">
+        <div>
+          <dt><svg class="gm-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg> Address</dt>
+          <dd><a href="https://maps.google.com/?q=1743+Eglinton+Ave+E,+Toronto+ON+M4A+1J8" target="_blank" rel="noopener">1743 Eglinton Ave E,<br>Toronto ON M4A 1J8</a><small>Shuttle pick-up at the service drive-thru entrance</small></dd>
+        </div>
+        <div>
+          <dt><svg class="gm-i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h3.6l1.8 4.5-2.3 1.6a12.5 12.5 0 0 0 6.8 6.8l1.6-2.3L21 15.4V19a2 2 0 0 1-2.2 2A16.8 16.8 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></svg> Service</dt>
+          <dd><a href="tel:+16472885337">647-288-5337</a></dd>
+        </div>
+        <div>
+          <dt><svg class="gm-i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg> Service Hours</dt>
+          <dd>Mon, Wed, Fri 7:30 AM &ndash; 5:00 PM<small>Tue &amp; Thu 7:30 AM &ndash; 7:00 PM &nbsp;&middot;&nbsp; Sat 8:00 AM &ndash; 4:00 PM &nbsp;&middot;&nbsp; Sun Closed</small></dd>
+        </div>
+        <div>
+          <dt><svg class="gm-i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Online</dt>
+          <dd><a href="https://goldenmilechrysler.ca" target="_blank" rel="noopener">goldenmilechrysler.ca</a></dd>
+        </div>
+      </dl>
+      <div class="gm-emergency">
+        <p class="gm-emergency__label">Shuttle Dispatch</p>
+        <p><a class="gm-emergency__tel" href="tel:+16472885337">647-288-5337</a></p>
+        <p>Ask for the service desk and we'll have a driver ready.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="gm-footer">
+  <div class="gm-wrap gm-footer__inner">
+    <div class="gm-footer__brand">
+      <div class="gm-footer__logo">
+        <img src="https://cdn.jsdelivr.net/gh/apparatus9/goldenmile-collision-centre@main/assets/logo-gmc-full.png" alt="Golden Mile Chrysler, Dodge, Jeep and Ram" width="460" height="310" loading="lazy">
+      </div>
+      <p class="gm-footer__tagline">Toronto's legendary dealership since 1962</p>
+    </div>
+    <div>
+      <h3>Service &amp; Parts</h3>
+      <ul class="gm-footer__links">
+        <li><a href="https://autoconnect.online/golden-mile-scheduler/" target="_blank" rel="noopener">Book a Service Appointment</a></li>
+        <li><a href="https://www.goldenmilechrysler.ca/collision-centre/">Collision Centre</a></li>
+        <li><a href="https://www.goldenmilechrysler.ca/service-promos/">Service Promos</a></li>
+        <li><a href="https://www.goldenmilechrysler.ca/parts-and-accessories/">Parts &amp; Accessories</a></li>
+        <li><a href="https://www.goldenmilechrysler.ca/contact/">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="gm-footer__contact">
+      <h3>Visit Us</h3>
+      <p><a href="https://maps.google.com/?q=1743+Eglinton+Ave+E,+Toronto+ON+M4A+1J8" target="_blank" rel="noopener">1743 Eglinton Ave E, Toronto ON M4A 1J8</a></p>
+      <p><a href="tel:+16472885337">647-288-5337</a></p>
+      <p><a href="https://goldenmilechrysler.ca" target="_blank" rel="noopener">goldenmilechrysler.ca</a></p>
+    </div>
+  </div>
+  <div class="gm-wrap gm-footer__bar">
+    <p>&copy; <span id="gmss-yr">2026</span> Golden Mile Chrysler. All rights reserved.</p>
+    <p>Complimentary shuttle service for every service visit.</p>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var yr = document.getElementById('gmss-yr');
+  if (yr) yr.textContent = new Date().getFullYear();
+  var toggle = document.getElementById('gmss-navtoggle');
+  document.querySelectorAll('#gmss .gm-nav a').forEach(function (a) {
+    a.addEventListener('click', function () { if (toggle) toggle.checked = false; });
+  });
+})();
+</script>
+</body>
+</html>
