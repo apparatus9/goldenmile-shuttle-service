@@ -344,6 +344,15 @@ body = body.replace(/<\/div>$/, '').trim();
 let imgCount = 0;
 body = body.replace(/src="images\/([^"]+)"/g, (m, f) => { imgCount++; return `src="${CDN}${f}"`; });
 
+/* Drop loading="lazy" in the embeds.
+   Standalone it is free performance. Inside WordPress it is a liability: the
+   image only fetches when the browser decides it is near the viewport, and on
+   a page that is being rewritten by caching/optimisation plugins, moved inside
+   a shadow root, or sitting in a clipped container, that decision is no longer
+   something we control. Three images, none above ~1MB - just load them. */
+let unlazied = 0;
+body = body.replace(/\s+loading="lazy"/g, () => { unlazied++; return ''; });
+
 /* Belt and braces: an <svg> with only a viewBox has no intrinsic size, so if
    the stylesheet ever fails to load it expands to fill its container. */
 let svgSized = 0;
@@ -567,6 +576,17 @@ function gmssInit(root, host) {
     };
     bleed();
     window.addEventListener('resize', bleed);
+    /* Re-measure once everything that can change the layout has settled.
+       calc(50% - 50vw) is measured against 100vw, which INCLUDES the vertical
+       scrollbar, so the CSS alone always overshoots by the scrollbar width and
+       puts a horizontal scrollbar on the page. bleed() measures
+       documentElement.clientWidth instead, which excludes it - but only if it
+       runs after the images have given the page its final height, because
+       that is what decides whether there is a vertical scrollbar at all. */
+    window.addEventListener('load', bleed);
+    if (window.ResizeObserver) {
+      try { new ResizeObserver(bleed).observe(document.documentElement); } catch (e) {}
+    }
   }
 }
 `.trim();
@@ -689,6 +709,7 @@ console.log('wrapper rules given doubled id  : ' + doubled);
 console.log('wrapper margin decls stripped   : ' + bleedFreed);
 console.log('css rules with svg sizing pinned : ' + svgPinned);
 console.log('inline svgs given width/height : ' + svgSized);
-console.log('images pointed at jsDelivr : ' + imgCount);
+console.log('images pointed at jsDelivr      : ' + imgCount);
+console.log('loading=lazy removed            : ' + unlazied);
 console.log('wrote wordpress-embed.html           ' + (plain.length / 1024).toFixed(1) + ' KB');
 console.log('wrote wordpress-embed-isolated.html  ' + (isolated.length / 1024).toFixed(1) + ' KB');
