@@ -298,6 +298,31 @@ ${SCOPE}${SCOPE} {
   overflow-x: clip;
 }
 
+/* ---- stray-child hardening ------------------------------------------
+   Belt and braces for the failure above. Even with the comments gone, any
+   editor or filter that drops an extra element inside a grid would consume
+   a cell and shunt our real content into the next row. Placing the two
+   halves explicitly means a stray child lands in row 2 and is ignored,
+   instead of displacing them.
+
+   The placement has to be undone at the single-column breakpoint, or the
+   two halves would be told to occupy the same cell and would overlap. */
+${SCOPE} .gm-split > .gm-split__media { grid-row: 1 !important; grid-column: 1 !important; }
+${SCOPE} .gm-split > .gm-split__body  { grid-row: 1 !important; grid-column: 2 !important; }
+${SCOPE} .gm-split--rev > .gm-split__media { grid-column: 2 !important; }
+${SCOPE} .gm-split--rev > .gm-split__body  { grid-column: 1 !important; }
+${SCOPE} .gm-area__grid > div:nth-of-type(1) { grid-row: 1 !important; grid-column: 1 !important; }
+${SCOPE} .gm-area__grid > div:nth-of-type(2) { grid-row: 1 !important; grid-column: 2 !important; }
+@media (max-width: 900px) {
+  ${SCOPE} .gm-split > .gm-split__media, ${SCOPE} .gm-split > .gm-split__body,
+  ${SCOPE} .gm-split--rev > .gm-split__media, ${SCOPE} .gm-split--rev > .gm-split__body,
+  ${SCOPE} .gm-area__grid > div:nth-of-type(1), ${SCOPE} .gm-area__grid > div:nth-of-type(2) {
+    grid-row: auto !important; grid-column: auto !important;
+  }
+}
+/* and an injected empty paragraph should take up no space anywhere */
+${SCOPE} p:empty { display: none !important; }
+
 /* FULL-BLEED. Lets the design escape the theme's content column.
    This page wants a full-width (no sidebar) page template.
    DELETE the next line to keep the block inside the column instead -
@@ -343,6 +368,16 @@ body = body.replace(/<\/div>$/, '').trim();
    Media Library and swap these for a permanent setup. */
 let imgCount = 0;
 body = body.replace(/src="images\/([^"]+)"/g, (m, f) => { imgCount++; return `src="${CDN}${f}"`; });
+
+/* Strip HTML comments from the markup.
+   wpautop wraps a comment that sits on its own in <p> tags, and on the live
+   page one of those landed INSIDE the About section's grid as a third child.
+   It took column 2, and the image - which carries order: 2 - was pushed to
+   row 2 of column 1, directly underneath the text. That is the "sitting on
+   top of each other" report. No comments in the markup, nothing to wrap.
+   The file header comment is added after this and is unaffected. */
+let commentsStripped = 0;
+body = body.replace(/<!--[\s\S]*?-->/g, () => { commentsStripped++; return ''; });
 
 /* Drop loading="lazy" in the embeds.
    Standalone it is free performance. Inside WordPress it is a liability: the
@@ -711,5 +746,6 @@ console.log('css rules with svg sizing pinned : ' + svgPinned);
 console.log('inline svgs given width/height : ' + svgSized);
 console.log('images pointed at jsDelivr      : ' + imgCount);
 console.log('loading=lazy removed            : ' + unlazied);
+console.log('html comments stripped          : ' + commentsStripped);
 console.log('wrote wordpress-embed.html           ' + (plain.length / 1024).toFixed(1) + ' KB');
 console.log('wrote wordpress-embed-isolated.html  ' + (isolated.length / 1024).toFixed(1) + ' KB');

@@ -192,3 +192,35 @@ above, the eDealer layout:
 | plain, before | 1200px wide at left=120 | 1200px wide at left=360 |
 | plain, after | 1440px at left=0 | 1920px at left=0 |
 | isolated | 1440px at left=0 | 1920px at left=0 |
+
+### The About section stacking instead of sitting side by side
+
+Diagnosed from the HTML eDealer actually served, not from guesswork. The
+About section's grid had **three** children, not two:
+
+| child | class | left | order |
+| --- | --- | --- | --- |
+| 1 | `gm-split__media` | 288 (col 1) | 2 |
+| 2 | `gm-split__body` | 288 (col 1) | 0 |
+| 3 | `<p>` — injected, empty | 864 (col 2) | 0 |
+
+`wpautop` had wrapped one of the markup's HTML comments in `<p>` tags and it
+landed inside the grid container. The stray paragraph took column 2, and the
+image — which carries `order: 2` — was pushed to row 2 of column 1, directly
+underneath the text.
+
+Two fixes:
+
+- **HTML comments are stripped from the embed markup.** No comment, nothing
+  for `wpautop` to wrap. (14 of them.)
+- **The two halves of every split are placed explicitly** (`grid-column` /
+  `grid-row`), undone at the 900px single-column breakpoint so they do not
+  overlap there. A stray child now lands in row 2 and is ignored instead of
+  displacing the real content. `#gmss p:empty` is also hidden.
+
+Verified by injecting a stray `<p>` into the grid on purpose:
+
+| | media | body |
+| --- | --- | --- |
+| before | left 288, top 1945 (stacked below) | left 864 |
+| after | left 864 (col 2) | left 288 (col 1) |
