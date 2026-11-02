@@ -167,3 +167,28 @@ generated file contains a blank line anywhere. Collapsing the markup also stops
 
 **Do not reformat the embeds to make them readable** — that reintroduces the
 bug. `shuttle-service-v2.html` is the readable copy; the embeds are generated.
+
+### Full-bleed, and the margin that was cancelling it
+
+The live Collision Centre page runs the **isolated** build, and its full-bleed
+is an inline style on the host div — nothing in the cascade can fight it.
+
+The plain build puts full-bleed in CSS, which the earlier version then lost:
+standalone, `#gmss` carries `margin: 0` because it sits directly in `<body>`,
+and the pinning and id-doubling passes turned that into
+`#gmss#gmss { margin: 0 !important }` at `(2,0,0)` — which beat the FULL-BLEED
+rule at `(1,0,0)`. The page came out boxed inside the theme's content column.
+
+Fixed by stripping `margin` from the wrapper's own rules (we own the wrapper
+in the embed, so it is free to drop) and raising FULL-BLEED to `#gmss#gmss`.
+Left non-`!important` on purpose, so the script's sidebar correction — which
+sets an inline margin — still wins.
+
+Measured inside a centred 1200px content column with a full-width theme banner
+above, the eDealer layout:
+
+| Build | 1440px | 1920px |
+| --- | --- | --- |
+| plain, before | 1200px wide at left=120 | 1200px wide at left=360 |
+| plain, after | 1440px at left=0 | 1920px at left=0 |
+| isolated | 1440px at left=0 | 1920px at left=0 |

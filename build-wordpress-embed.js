@@ -124,6 +124,20 @@ let doubled = 0;
 out = out.replace(/(^|[}\n])(\s*)#gmss(\s*\{)/g,
   (m, pre, ws, post) => { doubled++; return `${pre}${ws}#gmss#gmss${post}`; });
 
+/* Strip margin off the wrapper's own rules.
+   Standalone, #gmss carries margin: 0 because it sits directly in <body>.
+   In the embed we own the wrapper entirely, and that declaration is now both
+   !important (pinned above) and (2,0,0) (doubled above), so it beat the
+   FULL-BLEED rule and the page came out boxed inside the theme's content
+   column instead of running edge to edge. Nothing else sets a margin on the
+   wrapper, so dropping it here is free. */
+let bleedFreed = 0;
+out = out.replace(/(#gmss#gmss\s*\{)([^}]*)(\})/g, (m, open, decls, close) => {
+  const cleaned = decls.replace(/(^|;)\s*margin(-(top|right|bottom|left|inline|block))?\s*:[^;}]*;?/g,
+    (d) => { bleedFreed++; return ';'; });
+  return open + cleaned + close;
+});
+
 /* The sticky header is removed from the embeds, but the rule survives in the
    stylesheet; make sure it can never fight the theme's own sticky header. */
 out = out.replace(/position:\s*sticky;/g,
@@ -288,7 +302,7 @@ ${SCOPE}${SCOPE} {
    This page wants a full-width (no sidebar) page template.
    DELETE the next line to keep the block inside the column instead -
    the script at the bottom checks this rule and follows suit.          */
-${SCOPE} { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); width: auto; max-width: none; }
+${SCOPE}${SCOPE} { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); width: auto; max-width: none; }
 `;
 
 /* ======================================================================
@@ -672,6 +686,7 @@ fs.writeFileSync(p.join(__dirname, 'wordpress-embed-isolated.html'), noBlank(iso
 console.log('rem values resolved to px     : ' + remCount);
 console.log('declarations pinned !important : ' + pinned);
 console.log('wrapper rules given doubled id  : ' + doubled);
+console.log('wrapper margin decls stripped   : ' + bleedFreed);
 console.log('css rules with svg sizing pinned : ' + svgPinned);
 console.log('inline svgs given width/height : ' + svgSized);
 console.log('images pointed at jsDelivr : ' + imgCount);
