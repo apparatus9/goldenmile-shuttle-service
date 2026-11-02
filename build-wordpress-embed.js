@@ -513,8 +513,8 @@ function gmssInit(root, host) {
      must be ACTIVATED once by clicking the link FormSubmit emails it on the
      first submission. Until then FormSubmit accepts submissions, answers
      success:"false" and silently discards them. */
-  var GM_FORMSUBMIT    = 'ejay@goldenmilechrysler.ca';
-  var GM_FORMSUBMIT_CC = 'sanshia@goldenmilechrysler.ca,dhaanush@goldenmilechrysler.ca';
+  var GM_FORMSUBMIT    = 'sanshia@goldenmilechrysler.ca';
+  var GM_FORMSUBMIT_CC = 'dhaanush@goldenmilechrysler.ca';
 
   var wrap = root.getElementById ? root.getElementById('gmss') : null;
   if (!wrap) wrap = root.querySelector('#gmss');
