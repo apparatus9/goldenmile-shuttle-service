@@ -238,14 +238,85 @@ var GM_EMAILS = [
 ];
 ```
 
-**This does not send mail.** The form has no `action` and `GM_ENDPOINT` is
-empty, so submitting builds a `mailto:` and opens the visitor's own email
-program with the request pre-filled. The visitor still has to press send. On
-a desktop with no mail client configured — Gmail in a browser tab, say — the
-click does nothing visible and the lead is lost silently. If the `<script>`
-is stripped, the form is dead entirely.
+`GM_EMAILS` is now only the **fallback** path. The real recipients live in
+the `SHUTTLE_TO` environment variable on the server (see below), so they can
+be changed without touching the page or re-pasting anything.
 
-To deliver properly, set `GM_ENDPOINT` to a URL that accepts a POST. The
-script already handles it: it posts the fields plus `_to` and `_subject`,
-shows the confirmation, and falls back to `mailto:` only if the request
-fails.
+## Server-side sending (Resend)
+
+`GM_ENDPOINT` points at `api/shuttle-request.js`, deployed as a Vercel
+function. The form POSTs to it and the function emails the service team
+through Resend.
+
+This exists because the old `mailto:` path depends on the visitor having a
+working mail client. When they don't, the click does **nothing at all** — no
+error, no draft, no lead, and no way for anyone to know a request was
+attempted. That is not a hypothetical: it happened on the dev machine during
+testing, where new Outlook accepted the `mailto:` and silently never opened a
+compose window.
+
+```
+form on goldenmilechrysler.ca
+  --> POST (urlencoded) --> /api/shuttle-request on Vercel
+                              --> Resend --> SHUTTLE_TO inboxes
+  --> on failure only, falls back to mailto:
+```
+
+### Environment variables
+
+Set in Vercel (Project > Settings > Environment Variables). Never in the repo.
+
+| Name | Required | Notes |
+|---|---|---|
+| `RESEND_API_KEY` | yes | https://resend.com/api-keys |
+| `SHUTTLE_TO` | no | Comma-separated recipients. Falls back to the two addresses hardcoded in the function. |
+| `SHUTTLE_FROM` | no | Must be on a Resend-**verified** domain. Defaults to `onboarding@resend.dev`. |
+| `SHUTTLE_CC` | no | Comma-separated. |
+| `ALLOW_ORIGINS` | no | Extra browser origins. The two goldenmilechrysler.ca origins are always allowed. |
+
+```sh
+vercel env add RESEND_API_KEY production
+vercel --prod
+```
+
+Check it without sending anything — the health route reports whether config is
+present and never its values:
+
+```sh
+curl https://goldenmile-shuttle-service.vercel.app/api/shuttle-request
+# {"ok":true,"endpoint":"shuttle-request","resendKey":"set","recipients":2,...}
+```
+
+### onboarding@resend.dev only reaches you
+
+Until `goldenmilechrysler.ca` is verified in Resend, the default sender can
+only deliver to the Resend account owner's own address. Mail to
+`sanshia@` / `dhaanush@` will be **rejected with "domain is not verified"**,
+which the endpoint surfaces as a 502 rather than swallowing. Verify the domain
+in Resend (it asks for DNS records) and set `SHUTTLE_FROM` to something like
+`shuttle@goldenmilechrysler.ca`.
+
+### The recipient list is not taken from the browser
+
+The page used to POST a `_to` field containing the recipient list. The
+endpoint **ignores it**, and the page no longer sends it. If the server
+trusted that field, anyone who found the URL could POST to it and send mail to
+any address on the internet, from your domain — an open relay, and a fast way
+to get the domain blacklisted. Recipients come from `SHUTTLE_TO` only.
+
+Other things the endpoint does deliberately:
+
+- **CORS allowlist** — only the two goldenmilechrysler.ca origins get an
+  `Access-Control-Allow-Origin` header back, so another site cannot POST
+  through a visitor's browser.
+- **Honeypot** — a filled `_gotcha`/`website` field returns 200 and sends
+  nothing, so a bot cannot tell it was caught.
+- **CR/LF stripped** from every field, so a field cannot forge mail headers.
+- **HTML escaped** in the email body.
+- **Length caps** per field (notes clamped to 2000 chars).
+- Fields outside the known list are **dropped**, not forwarded.
+
+Sends urlencoded rather than multipart: it is a CORS-simple content type, so
+there is no preflight, and the server needs no multipart parser. The endpoint
+still accepts multipart and JSON, because a cached copy of the old page may
+still be sending `FormData`.

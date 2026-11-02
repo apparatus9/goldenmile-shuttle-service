@@ -502,7 +502,10 @@ function gmssInit(root, host) {
   ];
   var GM_EMAIL = GM_EMAILS.join(',');  /* RFC 6068: comma-separated recipients */
   var GM_SCROLL_OFFSET = 0;                                /* EDIT: px height of the theme's sticky header */
-  var GM_ENDPOINT      = '';                               /* EDIT: optional POST url; empty = mailto */
+  /* Server-side send. Removes the dependency on the visitor having a working
+     mail client - a mailto: click does nothing at all when they don't.
+     Set this back to '' to return to mailto-only. */
+  var GM_ENDPOINT      = 'https://goldenmile-shuttle-service.vercel.app/api/shuttle-request';
 
   var wrap = root.getElementById ? root.getElementById('gmss') : null;
   if (!wrap) wrap = root.querySelector('#gmss');
@@ -553,9 +556,17 @@ function gmssInit(root, host) {
       if (!GM_ENDPOINT) { mail(); if (done) done.classList.add('gm-is-on'); return; }
       var btn = f.querySelector('[type="submit"]'), label = btn ? btn.textContent : '';
       if (btn) { btn.disabled = true; btn.textContent = 'Sending\\u2026'; }
-      var data = new FormData(f);
+      /* urlencoded, not FormData: a CORS-simple content type, so no preflight,
+         and the server parses it without a multipart parser. The recipient list
+         is deliberately NOT sent - the server decides who receives the mail, so
+         this endpoint cannot be used to send mail to arbitrary addresses. */
+      var data = new URLSearchParams();
+      Array.prototype.forEach.call(f.elements, function (el) {
+        if (!el.name || el.disabled) return;
+        if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+        data.append(el.name, el.value);
+      });
       data.append('_subject', subject);
-      data.append('_to', GM_EMAIL);
       fetch(GM_ENDPOINT, { method: 'POST', body: data, credentials: 'same-origin' })
         .then(function (res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
