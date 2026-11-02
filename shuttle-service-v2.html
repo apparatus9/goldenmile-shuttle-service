@@ -895,7 +895,14 @@ html, body { margin: 0; padding: 0; }
   var LAST_DEP_OFFSET = 0.5;          // last departure = close minus 30 min
   var DEALER = { lat: 43.7254684, lng: -79.3123582 };   // 1743 Eglinton Ave E (from Google Maps)
   var RADIUS_KM = 10;                 // EDIT: service radius
-  var GM_EMAIL = 'service@goldenmilechrysler.ca'; // EDIT: destination for the request form
+  // EDIT: who receives a shuttle request. Add or remove addresses here -
+  // they go on the To: line in the order listed.
+  var GM_EMAILS = [
+    'sanshia@goldenmilechrysler.ca',
+    'dhaanush@goldenmilechrysler.ca',
+    'service@goldenmilechrysler.ca'   // unverified - delete if it is not a real mailbox
+  ];
+  var GM_EMAIL = GM_EMAILS.join(','); // RFC 6068: comma-separated recipients
 
   function fmt(h) {
     var hh = Math.floor(h), mm = Math.round((h - hh) * 60);

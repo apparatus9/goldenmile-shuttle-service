@@ -20,7 +20,7 @@ Search the page for `EDIT:` comments. Placeholders that need confirming:
 - Service hours and last shuttle departure (`HOURS`, `LAST_DEP_OFFSET` at the bottom of the page)
 - Service radius (`RADIUS_KM`) and the estimated drive times in the "popular stops" list
 - Testimonial quote
-- Form destination email (`GM_EMAIL`)
+- Form recipients (`GM_EMAILS`) — confirm the spellings and that each mailbox exists
 - The service-area image is a map screenshot; swap for a Google Maps embed before going live.
 
 Open `shuttle-service-v2.html` in a browser to preview.
@@ -224,3 +224,28 @@ Verified by injecting a stray `<p>` into the grid on purpose:
 | --- | --- | --- |
 | before | left 288, top 1945 (stacked below) | left 864 |
 | after | left 864 (col 2) | left 288 (col 1) |
+
+### Who receives a request
+
+`GM_EMAILS` near the top of the script, in both embeds and in the standalone
+page. Addresses go on the To: line in the order listed:
+
+```js
+var GM_EMAILS = [
+  'sanshia@goldenmilechrysler.ca',
+  'dhaanush@goldenmilechrysler.ca',
+  'service@goldenmilechrysler.ca'   // unverified - delete if not a real mailbox
+];
+```
+
+**This does not send mail.** The form has no `action` and `GM_ENDPOINT` is
+empty, so submitting builds a `mailto:` and opens the visitor's own email
+program with the request pre-filled. The visitor still has to press send. On
+a desktop with no mail client configured — Gmail in a browser tab, say — the
+click does nothing visible and the lead is lost silently. If the `<script>`
+is stripped, the form is dead entirely.
+
+To deliver properly, set `GM_ENDPOINT` to a URL that accepts a POST. The
+script already handles it: it posts the fields plus `_to` and `_subject`,
+shows the confirmation, and falls back to `mailto:` only if the request
+fails.

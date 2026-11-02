@@ -32,7 +32,14 @@ function gmssInit(root, host) {
     { d: 'Sat', open: 8,    close: 16   }
   ];
   var LAST_DEP_OFFSET  = 0.5;                              /* last departure = close minus 30 min */
-  var GM_EMAIL         = 'service@goldenmilechrysler.ca';  /* EDIT: destination for the request form */
+  /* EDIT: who receives a shuttle request. Add or remove addresses here -
+     they go on the To: line in the order listed. */
+  var GM_EMAILS = [
+    'sanshia@goldenmilechrysler.ca',
+    'dhaanush@goldenmilechrysler.ca',
+    'service@goldenmilechrysler.ca'   /* unverified - delete if it is not a real mailbox */
+  ];
+  var GM_EMAIL = GM_EMAILS.join(',');  /* RFC 6068: comma-separated recipients */
   var GM_SCROLL_OFFSET = 0;                                /* EDIT: px height of the theme's sticky header */
   var GM_ENDPOINT      = '';                               /* EDIT: optional POST url; empty = mailto */
   var wrap = root.getElementById ? root.getElementById('gmss') : null;
