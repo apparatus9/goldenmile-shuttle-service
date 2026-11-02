@@ -390,6 +390,34 @@ body = BAR_HTML + '\n' + body.trim();
 const STYLESHEET = `@import url('${FONT_URL}');\n${DEFENCE}${out}\n${WRAPPER}`;
 
 /* ======================================================================
+   wpautop-proofing.
+
+   WordPress runs wpautop() over post content and turns every BLANK LINE
+   into </p><p> - including blank lines inside an inline <style> or
+   <script>. A CSS parser hitting a stray <p> discards tokens until it can
+   resync at the next }, so one blank line costs roughly one rule. The
+   readable build had 45 blank lines in its stylesheet, and on the live
+   eDealer page that showed up as scattered dead rules: the hero overlay
+   and the stops grid survived, .gm-eyebrow and .gm-btn did not.
+
+   So: the stylesheet and the markup each go out as a single line, and the
+   finished file carries no blank line anywhere. Collapsing the markup also
+   stops wpautop inserting <p> tags between our grid children.
+
+   This is why the paste is one long line. Do not "tidy" it by adding line
+   breaks back - shuttle-service-v2.html is the readable copy, and this file
+   is generated from it.
+   ====================================================================== */
+
+/* Safe for CSS and for our markup: no // line comments anywhere in either,
+   and no <pre> or textarea whose whitespace matters. */
+const flat = s => s.replace(/\r?\n\s*/g, ' ').replace(/[ \t]{2,}/g, ' ').trim();
+
+/* For JavaScript, where collapsing to one line would also need the comments
+   handled: just drop the blank lines, which is all wpautop reacts to. */
+const noBlank = s => s.replace(/\r?\n[ \t]*(?=\r?\n)/g, '').replace(/\n{2,}/g, '\n');
+
+/* ======================================================================
    BOOT SCRIPT - written once, parameterised by root so the same code runs
    against `document` in the plain embed and against the shadow root in the
    isolated one.
@@ -554,24 +582,19 @@ const plain = `<!--
   some security plugins remove it for everyone. Use the isolated build, a
   snippet plugin, or move the script into the child theme's wp_footer.
 -->
-<style>
-${STYLESHEET}</style>
-
-<div id="gmss">
-${body}
-</div>
-
+<style>${flat(STYLESHEET)}</style>
+<div id="gmss">${flat(body)}</div>
 <script>
 (function () {
-  ${initFn.split('\n').join('\n  ')}
-  function go() { gmssInit(document, document.getElementById('gmss')); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
-  else go();
+${noBlank(initFn)}
+function go() { gmssInit(document, document.getElementById('gmss')); }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+else go();
 })();
 <\/script>
 `;
 
-fs.writeFileSync(p.join(__dirname, 'wordpress-embed.html'), plain, 'utf8');
+fs.writeFileSync(p.join(__dirname, 'wordpress-embed.html'), noBlank(plain), 'utf8');
 
 /* ======================================================================
    OUTPUT 2 - isolated (shadow root)
@@ -604,7 +627,7 @@ const HOST_STYLE = [
   'margin-left:calc(50% - 50vw)', 'margin-right:calc(50% - 50vw)',
 ].join(';');
 
-const shadowBoot = `
+const shadowBoot = noBlank(`
 ${initFn}
 (function () {
   var host = document.getElementById('gmss-host'), tpl = document.getElementById('gmss-tpl');
@@ -620,7 +643,7 @@ ${initFn}
   tpl.parentNode.removeChild(tpl);
   gmssInit(shadow, host);
 })();
-`.trim();
+`.trim());
 
 const isolated = `<!--
   Golden Mile Chrysler - Complimentary Shuttle Service (isolated build)
@@ -644,7 +667,7 @@ const isolated = `<!--
 <script>${shadowBoot}<\/script>
 `;
 
-fs.writeFileSync(p.join(__dirname, 'wordpress-embed-isolated.html'), isolated, 'utf8');
+fs.writeFileSync(p.join(__dirname, 'wordpress-embed-isolated.html'), noBlank(isolated), 'utf8');
 
 console.log('rem values resolved to px     : ' + remCount);
 console.log('declarations pinned !important : ' + pinned);

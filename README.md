@@ -137,3 +137,33 @@ killer only because `display` is in the pinned property list. The Collision
 Centre build pins just `font-size` and `font-family`, and its README records
 101 differences against that rule — that gap is the pinning, not the shadow
 root.
+
+### Why the paste is one long line
+
+WordPress runs `wpautop()` over post content, which turns every **blank line**
+into `</p><p>` — including blank lines inside an inline `<style>`. A CSS parser
+that hits a stray `<p>` discards tokens until it can resync at the next `}`, so
+one blank line costs roughly one rule.
+
+The first readable build had 45 blank lines in its stylesheet. On the live
+eDealer page that showed up as scattered dead rules — the hero overlay and the
+trust grid survived, `.gm-btn` and `.gm-eyebrow` did not, so the buttons
+rendered as plain text links and the eyebrows lost their orange.
+
+Reproduced by running both builds through a `wpautop` equivalent:
+
+| Probe | Clean | Old build, via wpautop | Current build, via wpautop |
+| --- | --- | --- | --- |
+| wrapper font | Barlow | Times New Roman | Barlow |
+| `.gm-btn` display | flex | block | flex |
+| `.gm-btn` background | orange | transparent | orange |
+| `.gm-eyebrow` colour | orange | theme blue | orange |
+| `.gm-hero` display | flex | block | flex |
+| stray `<p>` injected | 0 | 22 | 0 |
+
+So the stylesheet and the markup each go out as a single line, and neither
+generated file contains a blank line anywhere. Collapsing the markup also stops
+`wpautop` inserting `<p>` tags between grid children.
+
+**Do not reformat the embeds to make them readable** — that reintroduces the
+bug. `shuttle-service-v2.html` is the readable copy; the embeds are generated.
