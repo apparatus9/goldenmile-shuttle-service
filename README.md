@@ -242,10 +242,71 @@ var GM_EMAILS = [
 the `SHUTTLE_TO` environment variable on the server (see below), so they can
 be changed without touching the page or re-pasting anything.
 
-## Server-side sending (Resend)
+## Sending, option A: FormSubmit (no API key)
 
-`GM_ENDPOINT` points at `api/shuttle-request.js`, deployed as a Vercel
-function. The form POSTs to it and the function emails the service team
+This is the path currently active. `GM_FORMSUBMIT` is set, which takes
+priority over `GM_ENDPOINT`, and the form POSTs straight to FormSubmit from
+the browser. No server of ours, no API key, nothing to deploy.
+
+```js
+var GM_FORMSUBMIT    = 'ejay@goldenmilechrysler.ca';
+var GM_FORMSUBMIT_CC = 'sanshia@goldenmilechrysler.ca,dhaanush@goldenmilechrysler.ca';
+```
+
+### The one step you cannot skip
+
+The address must be **activated once**. FormSubmit emails it a confirmation
+link on the first submission; somebody with access to that inbox clicks it.
+
+No email service will send to an arbitrary address without you first proving
+you control either the destination or the sending domain — otherwise it is a
+free spam cannon. Resend takes that proof as an API key plus DNS records,
+FormSubmit takes it as one click. There is no option that skips the proof;
+the click is simply the cheapest form of it.
+
+### success:"false" is the trap
+
+An unactivated inbox does not produce an error. FormSubmit answers **HTTP 200**
+with `{"success":"false"}` and **discards the submission**. Code that checks
+`res.ok` would show the visitor a confirmation and drop the lead — exactly the
+silent failure the `mailto:` path had. So the handler checks the JSON body:
+
+```js
+if (String(j.success) !== 'true') throw new Error(j.message || 'rejected');
+```
+
+and the `.catch()` falls back to `mailto:`. Verified in a real browser, both
+branches: 19/19 in `fsubmit.js`.
+
+### Other things to know
+
+- **A `Referer` header is required.** FormSubmit rejects submissions without
+  one — "FormSubmit will not work in pages browsed as HTML files". Opening the
+  page as a `file://` URL always fails. Serve it over HTTP to test.
+- **The address is visible in the page source**, so spam bots will scrape it.
+  FormSubmit issues a random alias (e.g. `/ajax/a1b2c3...`) after activation —
+  swap `GM_FORMSUBMIT` to the alias and the real mailbox stops being public.
+  This is the main thing the Resend endpoint does better: there the recipients
+  live in server-side env vars and never reach the browser.
+- **CC activation is unclear.** Sources disagree on whether each `_cc`
+  address needs its own confirmation. Confirm that Sanshia and Dhaanush
+  actually receive one before trusting it.
+- **Customer data goes through a free third party.** Names, phone numbers and
+  destinations are customer PII passing through a service with no contract or
+  SLA behind it. Fine for proving the flow works; worth a thought before it
+  carries real traffic for a dealership.
+- Submissions are urlencoded, which is a CORS-simple content type, so there is
+  no preflight to depend on. Field names are capitalised (`Name`, `Phone`,
+  `Appointment`) because FormSubmit uses them verbatim as labels in the email.
+
+To go back to mailto-only, set `GM_FORMSUBMIT` and `GM_ENDPOINT` to `''`.
+
+## Sending, option B: Resend
+
+``GM_ENDPOINT` points at `api/shuttle-request.js`, deployed as a Vercel
+function. It is **only used when `GM_FORMSUBMIT` is empty**, and is the better
+long-term option: recipients live in server-side env vars rather than in the
+public page source. The form POSTs to it and the function emails the service team
 through Resend.
 
 This exists because the old `mailto:` path depends on the visitor having a

@@ -904,6 +904,15 @@ html, body { margin: 0; padding: 0; }
   ];
   var GM_EMAIL = GM_EMAILS.join(','); // RFC 6068: comma-separated recipients
 
+  // EDIT: FormSubmit needs no API key. Set this and the form actually sends
+  // instead of opening the visitor's mail client. The address must be
+  // ACTIVATED once via the link FormSubmit emails it on the first submission;
+  // until then it answers success:"false" and discards submissions.
+  // Prefer the random alias FormSubmit gives you - this string is visible
+  // in the public page source and will be scraped by spam bots.
+  var GM_FORMSUBMIT    = 'ejay@goldenmilechrysler.ca';
+  var GM_FORMSUBMIT_CC = 'sanshia@goldenmilechrysler.ca,dhaanush@goldenmilechrysler.ca';
+
   function fmt(h) {
     var hh = Math.floor(h), mm = Math.round((h - hh) * 60);
     var ap = hh >= 12 ? 'PM' : 'AM'; var h12 = hh % 12; if (h12 === 0) h12 = 12;
@@ -923,15 +932,41 @@ html, body { margin: 0; padding: 0; }
   });
   tbody.innerHTML = rows;
 
-  // ---------- request form (mailto until connected) ----------
+  // ---------- request form (FormSubmit, mailto as fallback) ----------
   var f = document.getElementById('gmss-form');
   f.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!f.checkValidity()) { f.reportValidity(); return; }
     var v = function (n) { return f.elements[n].value; };
     var body = 'Shuttle request\n\nName: ' + v('first') + ' ' + v('last') + '\nPhone: ' + v('phone') + '\nAppointment: ' + v('date') + ' at ' + v('time') + '\nTrip: ' + v('trip') + '\nDestination: ' + v('dest') + '\nNotes: ' + v('notes');
-    window.location.href = 'mailto:' + GM_EMAIL + '?subject=' + encodeURIComponent('Shuttle request - ' + v('first') + ' ' + v('last') + ' - ' + v('date')) + '&body=' + encodeURIComponent(body);
-    document.getElementById('gmss-form-done').classList.add('is-on');
+    var subject = 'Shuttle request - ' + v('first') + ' ' + v('last') + ' - ' + v('date');
+    var done = document.getElementById('gmss-form-done');
+    var mail = function () {
+      window.location.href = 'mailto:' + GM_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      if (done) done.classList.add('is-on');
+    };
+    if (!GM_FORMSUBMIT) { mail(); return; }
+    var fd = new URLSearchParams();
+    fd.append('_subject', subject);
+    fd.append('_captcha', 'false');
+    fd.append('_template', 'table');
+    if (GM_FORMSUBMIT_CC) fd.append('_cc', GM_FORMSUBMIT_CC);
+    // FormSubmit uses the field names verbatim as labels in the email it sends.
+    fd.append('Name', v('first') + ' ' + v('last'));
+    fd.append('Phone', v('phone'));
+    fd.append('Appointment', v('date') + ' at ' + v('time'));
+    fd.append('Trip', v('trip'));
+    fd.append('Destination', v('dest'));
+    fd.append('Notes', v('notes'));
+    fetch('https://formsubmit.co/ajax/' + encodeURIComponent(GM_FORMSUBMIT), { method: 'POST', body: fd })
+      .then(function (res) { return res.json().catch(function () { return {}; }); })
+      .then(function (j) {
+        // success:"false" arrives with HTTP 200 and the submission is DISCARDED,
+        // so checking res.ok alone would report success and lose the lead.
+        if (String(j.success) !== 'true') throw new Error(j.message || 'rejected');
+        f.reset(); if (done) done.classList.add('is-on');
+      })
+      .catch(mail);
   });
 
   // ---------- scroll reveal ----------

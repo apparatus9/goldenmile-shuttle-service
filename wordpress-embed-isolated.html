@@ -38,6 +38,14 @@
      mail client - a mailto: click does nothing at all when they don't.
      Set this back to '' to return to mailto-only. */
   var GM_ENDPOINT      = 'https://goldenmile-shuttle-service.vercel.app/api/shuttle-request';
+  /* EDIT: FormSubmit needs no API key. Set this and it takes priority over
+     GM_ENDPOINT. The address (or the random alias FormSubmit gives you -
+     prefer the alias, this string is visible in the public page source)
+     must be ACTIVATED once by clicking the link FormSubmit emails it on the
+     first submission. Until then FormSubmit accepts submissions, answers
+     success:"false" and silently discards them. */
+  var GM_FORMSUBMIT    = 'ejay@goldenmilechrysler.ca';
+  var GM_FORMSUBMIT_CC = 'sanshia@goldenmilechrysler.ca,dhaanush@goldenmilechrysler.ca';
   var wrap = root.getElementById ? root.getElementById('gmss') : null;
   if (!wrap) wrap = root.querySelector('#gmss');
   if (!wrap || wrap.getAttribute('data-gmss-ready') === '1') return;
@@ -80,9 +88,45 @@
         window.location.href = 'mailto:' + GM_EMAIL + '?subject=' +
           encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
       };
-      if (!GM_ENDPOINT) { mail(); if (done) done.classList.add('gm-is-on'); return; }
+      if (!GM_FORMSUBMIT && !GM_ENDPOINT) { mail(); if (done) done.classList.add('gm-is-on'); return; }
       var btn = f.querySelector('[type="submit"]'), label = btn ? btn.textContent : '';
       if (btn) { btn.disabled = true; btn.textContent = 'Sending\u2026'; }
+      var finish = function () { if (btn) { btn.disabled = false; btn.textContent = label; } };
+      var ok = function () { f.reset(); if (done) done.classList.add('gm-is-on'); };
+      /* ---- FormSubmit: no API key, no server of our own ---- */
+      if (GM_FORMSUBMIT) {
+        /* urlencoded keeps this a CORS-simple request, so there is no
+           preflight to depend on. FormSubmit uses the field names verbatim
+           as the labels in the email, hence the capitalised keys. */
+        var fd = new URLSearchParams();
+        fd.append('_subject', subject);
+        fd.append('_captcha', 'false');
+        fd.append('_template', 'table');
+        if (GM_FORMSUBMIT_CC) fd.append('_cc', GM_FORMSUBMIT_CC);
+        fd.append('Name', v('first') + ' ' + v('last'));
+        fd.append('Phone', v('phone'));
+        fd.append('Appointment', v('date') + ' at ' + v('time'));
+        fd.append('Trip', v('trip'));
+        fd.append('Destination', v('dest'));
+        fd.append('Notes', v('notes'));
+        fetch('https://formsubmit.co/ajax/' + encodeURIComponent(GM_FORMSUBMIT), {
+          method: 'POST', body: fd
+        })
+          .then(function (res) { return res.json().catch(function () { return {}; }); })
+          .then(function (j) {
+            /* FormSubmit answers HTTP 200 with success:"false" when the inbox
+               has not been activated, and DISCARDS the submission. Checking
+               res.ok alone would report success and lose the lead. */
+            if (String(j.success) !== 'true') {
+              throw new Error(j.message || 'FormSubmit rejected the submission');
+            }
+            ok();
+          })
+          .catch(mail)
+          .then(finish);
+        return;
+      }
+      /* ---- our own endpoint (Resend) ---- */
       /* urlencoded, not FormData: a CORS-simple content type, so no preflight,
          and the server parses it without a multipart parser. The recipient list
          is deliberately NOT sent - the server decides who receives the mail, so
@@ -97,10 +141,10 @@
       fetch(GM_ENDPOINT, { method: 'POST', body: data, credentials: 'same-origin' })
         .then(function (res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
-          f.reset(); if (done) done.classList.add('gm-is-on');
+          ok();
         })
         .catch(mail)
-        .then(function () { if (btn) { btn.disabled = false; btn.textContent = label; } });
+        .then(finish);
     });
   }
   /* ---------- scroll reveal ---------- */
